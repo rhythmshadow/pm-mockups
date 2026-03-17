@@ -44,7 +44,7 @@
          */
         #status-badge { padding: 4px 10px; border-radius: 3px; font-size: 10px; color: white; font-weight: 800; letter-spacing: 0.5px; transition: background 0.3s; }
         .bg-proofing { background: #F5A623; }
-        .bg-entry { background: #27ae60; }
+        .bg-entry { background: #2980B9; }
 
         /* Layout */
         .main-content { display: flex; gap: 25px; align-items: flex-start; }
@@ -250,7 +250,7 @@
 
         if (entrySelect.value && entrySelect.value !== "") {
             statusBadge.innerText = "ENTRY";
-            statusBadge.className = "bg-entry"; // Apply green styling
+            statusBadge.className = "bg-entry"; // Apply blue styling (Entry status)
         } else {
             statusBadge.innerText = "PROOFING";
             statusBadge.className = "bg-proofing"; // Revert to yellow/orange styling
