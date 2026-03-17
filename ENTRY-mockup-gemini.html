@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChartCMS — Entry Person Dropdown Mockup</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #f0f0f0;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Mockup label ── */
+    .mockup-banner {
+      max-width: 620px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mockup-banner .badge {
+      background: #7C3AED;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .mockup-banner span {
+      font-size: 12px;
+      color: #6B7280;
+    }
+
+    /* ── Chart card ── */
+    .card {
+      max-width: 620px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1px solid #d4d4d4;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* ── Top metadata bar ── */
+    .meta-bar {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meta-item .label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      color: #6B7280;
+      text-transform: uppercase;
+    }
+
+    .meta-item .value {
+      font-size: 13px;
+      color: #111827;
+    }
+
+    .meta-item .value.link {
+      color: #E67E22;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .status-badge {
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 4px 10px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      transition: background 0.25s ease;
+      background: #F97316;
+    }
+
+    .status-badge.status-entry {
+      background: #4F46E5;
+    }
+
+    .copy-icon {
+      display: inline-block;
+      margin-left: 4px;
+      color: #9CA3AF;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* ── Workflow body ── */
+    .workflow-body {
+      padding: 20px 20px 28px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 18px;
+    }
+
+    /* ── Field grid ── */
+    .field-row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .field-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .field-row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .field-row-1 { grid-template-columns: 1fr; }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    /* Inputs / selects */
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 4px;
+      padding: 7px 10px;
+      font-size: 13px;
+      color: #111827;
+      background: #fff;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      outline: none;
+      border-color: #6B7280;
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 62px;
+    }
+
+    /* Date input wrapper with icon */
+    .date-wrapper {
+      position: relative;
+    }
+
+    .date-wrapper .field-input {
+      padding-right: 32px;
+    }
+
+    .date-wrapper .cal-icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9CA3AF;
+      pointer-events: none;
+      font-size: 15px;
+    }
+
+    /* Select wrapper with arrow */
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper .field-select {
+      padding-right: 28px;
+      cursor: pointer;
+    }
+
+    .select-wrapper::after {
+      content: "▾";
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6B7280;
+      pointer-events: none;
+      font-size: 13px;
+    }
+
+    /* ── NEW indicator ── */
+    .field-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .new-pill {
+      background: #EEF2FF;
+      color: #4F46E5;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    /* ── Annotation ── */
+    .annotation-row {
+      max-width: 620px;
+      margin: 18px auto 0;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #92400E;
+      line-height: 1.5;
+    }
+
+    .annotation-row strong {
+      color: #78350F;
+    }
+
+    .annotation-row ul {
+      margin-top: 6px;
+      padding-left: 18px;
+    }
+
+    .annotation-row ul li {
+      margin-bottom: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mockup label -->
+  <div class="mockup-banner">
+    <span class="badge">Mockup</span>
+    <span>ChartCMS — Workflow Tab · Entry Person dropdown (PB-2936)</span>
+  </div>
+
+  <!-- Chart card -->
+  <div class="card">
+
+    <!-- Metadata bar -->
+    <div class="meta-bar">
+      <div class="meta-item">
+        <span class="label">Status</span>
+        <span id="statusBadge" class="status-badge">Proofing</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Created</span>
+        <span class="value">10/22/2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Batch Number</span>
+        <span class="value"><a class="link">216</a></span>
+      </div>
+      <div class="meta-item">
+        <span class="label">File Number</span>
+        <span class="value">354599 <span class="copy-icon">⎘</span></span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Datawrapper ID</span>
+        <span class="value">N/A</span>
+      </div>
+    </div>
+
+    <!-- Workflow body -->
+    <div class="workflow-body">
+      <div class="section-title">Workflow</div>
+
+      <!-- Row 1: Due Date | Reviewer | Entry Person (NEW) | Priority -->
+      <div class="field-row field-row-4">
+
+        <div class="field-group">
+          <label class="field-label">Due Date</label>
+          <div class="date-wrapper">
+            <input type="date" class="field-input" value="2025-11-14" style="padding-right:32px;cursor:pointer;">
+            <span class="cal-icon" style="pointer-events:none;">📅</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Reviewer</label>
+          <div class="select-wrapper">
+            <select class="field-select">
+              <option value="">No Reviewer assigned</option>
+              <option>Alasdair Denis Carlos</option>
+              <option>Amy Rotondo</option>
+              <option>Ana Sazon</option>
+              <option>Chris Keating</option>
+              <option>Emman Velasco</option>
+              <option>Herand Pandaan</option>
+              <option>Jenni Pearson</option>
+              <option>Jherr Daven Velasco</option>
+              <option>Jinpeng Li</option>
+              <option>Johan Bax</option>
+              <option>Johann Valderrama</option>
+              <option>Kevin Yu</option>
+              <option>Leo Corpuz</option>
+              <option>Matt Torpey</option>
+              <option>Penelope Lin</option>
+              <option>Tracy Tang</option>
+              <option selected>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label-row">
+            <label class="field-label">Entry Person</label>
+            <span class="new-pill">New</span>
+          </div>
+          <div class="select-wrapper">
+            <select id="entryPersonSelect" class="field-select" style="border-color: #6366F1; box-shadow: 0 0 0 2px rgba(99,102,241,0.12);" onchange="handleEntryPerson(this)">
+              <option value="" selected>No Entry Person Assigned</option>
+              <option>Alasdair Denis Carlos</option>
+              <option>Amy Rotondo</option>
+              <option>Ana Sazon</option>
+              <option>Chris Keating</option>
+              <option>Emman Velasco</option>
+              <option>Herand Pandaan</option>
+              <option>Jenni Pearson</option>
+              <option>Jherr Daven Velasco</option>
+              <option>Jinpeng Li</option>
+              <option>Johan Bax</option>
+              <option>Johann Valderrama</option>
+              <option>Kevin Yu</option>
+              <option>Leo Corpuz</option>
+              <option>Matt Torpey</option>
+              <option>Penelope Lin</option>
+              <option>Tracy Tang</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Priority</label>
+          <div class="select-wrapper">
+            <select class="field-select">
+              <option selected>None</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+              <option>Urgent</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Source URL -->
+      <div class="field-row field-row-1">
+        <div class="field-group">
+          <label class="field-label">Source Url</label>
+          <textarea class="field-textarea">PDF - https://emarketer.sharepoint.com/:b:/s/research-and-taxonomy/Ed5eiG_Rh-ZGsTeL66d-WAkBjbsp1SMnpmCuHF_DIzPbXA?e=ZPrV9m
+
+Plan - https://company.e2.com/news/2025-ai-report</textarea>
+        </div>
+      </div>
+
+      <!-- Special Instructions -->
+      <div class="field-row field-row-1">
+        <div class="field-group">
+          <label class="field-label">Special Instructions</label>
+          <textarea class="field-textarea" placeholder=""></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Annotation -->
+  <div class="annotation-row">
+    <strong>Design note — Entry Person dropdown (PB-2936):</strong>
+    <ul>
+      <li>Positioned in the Workflow tab row alongside Reviewer and Priority</li>
+      <li>Populated with the <strong>same user list</strong> as the Reviewer dropdown</li>
+      <li>Saving a selection fires the handoff trigger (defined in <strong>PB-2730</strong>), which automatically transitions the chart to <strong>'Entry' status</strong> — users cannot set status manually</li>
+      <li>Selected Entry Person is persisted and displayed after save</li>
+    </ul>
+  </div>
+
+  <script>
+    function handleEntryPerson(sel) {
+      var badge = document.getElementById('statusBadge');
+      if (sel.value && sel.value !== '') {
+        badge.textContent = 'Entry';
+        badge.classList.add('status-entry');
+      } else {
+        badge.textContent = 'Proofing';
+        badge.classList.remove('status-entry');
+      }
+    }
+  </script>
+</body>
+</html>
