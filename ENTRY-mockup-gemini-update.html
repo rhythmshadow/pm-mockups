@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chart CMS Mockup - Dev Annotated</title>
+    <style>
+        /* Base Typography & Resets */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f6f8;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 80px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrapper { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* Top Navigation */
+        .top-nav { background: #fff; border-bottom: 1px solid #eaeaea; height: 60px; display: flex; align-items: center; }
+        .top-nav-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .nav-left { display: flex; align-items: center; gap: 40px; }
+        .logo { display: flex; align-items: center; }
+        .nav-links { display: flex; gap: 24px; font-size: 13px; font-weight: 500; color: #666; }
+        .nav-links span { cursor: pointer; }
+        .nav-links span.active { color: #1a1a1a; font-weight: 600; }
+        .nav-right { display: flex; flex-direction: column; align-items: flex-end; font-size: 11px; color: #888; line-height: 1.4; }
+        .user-name { font-weight: 600; color: #1a1a1a; font-size: 12px; }
+
+        /* Title Section */
+        .title-section { background: #fff; border-bottom: 1px solid #eaeaea; padding: 25px 0 25px 0; }
+        .title-inner { display: flex; gap: 15px; align-items: flex-start; }
+        .back-arrow { color: #aaa; font-size: 20px; font-weight: 300; cursor: pointer; line-height: 1.1; margin-top: 2px; }
+        .chart-title { font-size: 20px; font-weight: 700; color: #222; margin: 0; line-height: 1.4; }
+
+        /* Metadata Header */
+        .meta-header { display: flex; gap: 50px; margin: 25px 0 20px 0; }
+        .meta-item { display: flex; flex-direction: column; gap: 6px; }
+        .meta-label { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-val { font-size: 13px; font-weight: 600; display: flex; align-items: center; }
+
+        /* * 🟢 DEV NOTE: Added specific classes for the status badge dynamic styling.
+         */
+        #status-badge { padding: 4px 10px; border-radius: 3px; font-size: 10px; color: white; font-weight: 800; letter-spacing: 0.5px; transition: background 0.3s; }
+        .bg-proofing { background: #F5A623; }
+        .bg-entry { background: #2980B9; }
+
+        /* Layout */
+        .main-content { display: flex; gap: 25px; align-items: flex-start; }
+        .card { background: white; padding: 25px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #eaeaea; }
+        .workflow-area { flex: 2; }
+        .sidebar-area { flex: 1; min-width: 300px; }
+
+        h2 { font-size: 15px; margin: 0 0 20px 0; font-weight: 700; color: #111; }
+
+        /* Form Grids */
+        .row { display: grid; grid-template-columns: 1fr 1.5fr 1.5fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .field { display: flex; flex-direction: column; }
+        label { font-size: 11px; font-weight: 700; color: #333; margin-bottom: 8px; }
+
+        .input-wrap { position: relative; display: flex; align-items: center; }
+        input, select, textarea { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; font-family: inherit; background: #fff; box-sizing: border-box; color: #222; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #999; }
+        select { appearance: auto; cursor: pointer; }
+        .cal-icon { position: absolute; right: 10px; color: #E3000F; font-size: 14px; pointer-events: none; }
+        textarea { height: 80px; resize: vertical; line-height: 1.5; }
+
+        /* Sidebar Elements */
+        .dw-link { color: #3498db; text-decoration: none; font-size: 11px; float: right; font-weight: 500; }
+        .btn-link { width: 100%; padding: 8px; margin-top: 10px; background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px; color: #aaa; font-weight: 600; cursor: not-allowed; font-size: 12px; }
+        .preview-placeholder { width: 100%; height: 220px; background: #fdfdfd; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #999; font-size: 12px; margin: 20px 0; }
+        .btn-generate { background: #E3000F; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 12px; }
+
+        /* Bottom Navigation Tabs */
+        .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #ddd; padding: 12px 0; z-index: 100; }
+        .bottom-bar-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+
+        .tab-container { display: flex; border: 1px solid #ccc; border-radius: 20px; overflow: hidden; background: #fff; }
+        .tab-segment { padding: 6px 24px; font-size: 12px; font-weight: 600; color: #444; cursor: pointer; border-right: 1px solid #ccc; }
+        .tab-segment:last-child { border-right: none; }
+        .tab-segment.active { background: #111; color: #fff; }
+
+        .actions { display: flex; align-items: center; gap: 20px; }
+        .saved-text { font-size: 12px; color: #666; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .btn-publish { background: #E3000F; color: white; border: none; padding: 8px 24px; border-radius: 20px; font-weight: 600; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<header class="top-nav">
+    <div class="wrapper top-nav-inner">
+        <div class="nav-left">
+            <div class="logo">
+                <img src="data:image/png;base64,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" alt="EMARKETER Logo" style="height: 18px; width: auto; margin-top: 4px;">
+            </div>
+            <div class="nav-links">
+                <span>Assets</span>
+                <span class="active">Chart CMS</span>
+                <span>Research CMS</span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <span class="user-name">Dana Hill</span>
+            <span>Admin</span>
+        </div>
+    </div>
+</header>
+
+<div class="title-section">
+    <div class="wrapper title-inner">
+        <div class="back-arrow">‹</div>
+        <h1 class="chart-title">NOT CHARTING: Reported Levels of AI Agent Autonomy Among Technology Decision-Makers Worldwide, Aug 2025 (% of respondents)</h1>
+    </div>
+</div>
+
+<div class="wrapper">
+    <div class="meta-header">
+        <div class="meta-item">
+            <div class="meta-label">Status</div>
+            <div><span id="status-badge" class="bg-proofing">PROOFING</span></div>
+        </div>
+        <div class="meta-item"><div class="meta-label">Created</div><span class="meta-val">10/22/2025</span></div>
+        <div class="meta-item"><div class="meta-label">Batch Number</div><span class="meta-val" style="color:#E3000F; text-decoration: underline; text-underline-offset: 2px;">216</span></div>
+        <div class="meta-item"><div class="meta-label">File Number</div><span class="meta-val">354602 <span style="color:#bbb; font-size:14px; margin-left:6px; cursor:pointer;">📋</span></span></div>
+        <div class="meta-item"><div class="meta-label">Datawrapper ID</div><span class="meta-val">N/A</span></div>
+    </div>
+
+    <div class="main-content">
+        <div class="card workflow-area">
+            <h2>Workflow</h2>
+            <div class="row">
+                <div class="field">
+                    <label>Due Date</label>
+                    <div class="input-wrap">
+                        <input type="text" value="11/14/2025">
+                        <span class="cal-icon">📅</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Entry</label>
+                    <select id="entry-dropdown" onchange="updateStatus()">
+                        <option value="">No Entry Person Assigned</option>
+                        <option value="user">Alasdair Denis Carlos</option>
+                        <option value="user">Amy Rotondo</option>
+                        <option value="user">Ana Sazon</option>
+                        <option value="user">Chris Keating</option>
+                        <option value="user">Emman Velasco</option>
+                        <option value="user">Herand Pandaan</option>
+                        <option value="user">Jenni Pearson</option>
+                        <option value="user">Jherr Daven Velasco</option>
+                        <option value="user">Jinpeng Li</option>
+                        <option value="user">Johan Bax</option>
+                        <option value="user">Johann Valderrama</option>
+                        <option value="user">Kevin Yu</option>
+                        <option value="user">Leo Corpuz</option>
+                        <option value="user">Matt Torpey</option>
+                        <option value="user">Penelope Lin</option>
+                        <option value="user">Tracy Tang</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Reviewer</label>
+                    <select>
+                        <option selected>Other</option>
+                        <option>No Reviewer assigned</option>
+                        <option>Alasdair Denis Carlos</option>
+                        <option>Amy Rotondo</option>
+                        <option>Ana Sazon</option>
+                        <option>Chris Keating</option>
+                        <option>Emman Velasco</option>
+                        <option>Herand Pandaan</option>
+                        <option>Jenni Pearson</option>
+                        <option>Jherr Daven Velasco</option>
+                        <option>Jinpeng Li</option>
+                        <option>Johan Bax</option>
+                        <option>Johann Valderrama</option>
+                        <option>Kevin Yu</option>
+                        <option>Leo Corpuz</option>
+                        <option>Matt Torpey</option>
+                        <option>Penelope Lin</option>
+                        <option>Tracy Tang</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Priority</label>
+                    <select>
+                        <option>None</option>
+                        <option>Urgent/Client</option>
+                        <option>Report/Webinar</option>
+                        <option>Embargoed</option>
+                        <option>Database</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field" style="margin-bottom: 20px;">
+                <label>Source Url</label>
+                <textarea>PDF - https://emarketer.sharepoint.com/:b:/s/research-and-taxonomy/Ed5eiG_Rh-ZGsTeL66d-WAkBjbsp1SMnpmCuHF_DIzPbXA?e=ZPrV9m&#13;&#10;&#13;&#10;Blog - https://company.g2.com/news/2025-ai-agent-report</textarea>
+            </div>
+
+            <div class="field">
+                <label>Special Instructions</label>
+                <textarea></textarea>
+            </div>
+        </div>
+
+        <div class="card sidebar-area">
+            <h2>Chart Image</h2>
+            <div class="field">
+                <label>Datawrapper <a href="#" class="dw-link">Change method</a></label>
+                <label style="margin-top:10px;">Link Datawrapper</label>
+                <div class="input-wrap">
+                    <span style="position:absolute; left:10px; color:#bbb; font-size:14px; transform: rotate(45deg);">🔗</span>
+                    <input type="text" placeholder="ID" style="padding-left:32px;">
+                </div>
+                <button class="btn-link">Link</button>
+            </div>
+            <div class="preview-placeholder">Preview not available</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <button class="btn-generate">Generate Image</button>
+                <span style="font-weight:bold; font-size:18px; cursor:pointer; color:#777; padding: 0 5px;">⋮</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="bottom-bar">
+    <div class="wrapper bottom-bar-inner">
+        <div class="tab-container">
+            <div class="tab-segment">Properties</div>
+            <div class="tab-segment">Document</div>
+            <div class="tab-segment">Data</div>
+            <div class="tab-segment active">Workflow</div>
+        </div>
+        <div class="actions">
+            <span class="saved-text"><span style="color:#E3000F; font-size:16px;">☑</span> Saved</span>
+            <button class="btn-publish">Publish</button>
+        </div>
+    </div>
+</footer>
+
+<script>
+    function updateStatus() {
+        const entrySelect = document.getElementById('entry-dropdown');
+        const statusBadge = document.getElementById('status-badge');
+
+        if (entrySelect.value && entrySelect.value !== "") {
+            statusBadge.innerText = "ENTRY";
+            statusBadge.className = "bg-entry"; // Apply blue styling (Entry status)
+        } else {
+            statusBadge.innerText = "PROOFING";
+            statusBadge.className = "bg-proofing"; // Revert to yellow/orange styling
+        }
+    }
+</script>
+
+</body>
+</html>
