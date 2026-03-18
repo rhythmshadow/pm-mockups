@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart CMS - EMARKETER</title>
+    <style>
+        /* Global Styles */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; margin: 0; color: #333; font-size: 13px; }
+        a { color: #e6192e; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        /* Top Navigation */
+        .top-header { background: #fff; border-bottom: 1px solid #ddd; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; height: 50px; }
+        .logo { display: flex; align-items: center; }
+        .logo img { height: 22px; object-fit: contain; }
+        .top-nav { display: flex; gap: 20px; height: 100%; align-items: center; margin-left: 30px; }
+        .top-nav a { color: #666; font-weight: 500; height: 100%; display: flex; align-items: center; padding: 0 5px; text-decoration: none; border-bottom: 2px solid transparent; }
+        .top-nav a.active { color: #333; border-bottom-color: #e6192e; }
+        .user-info { text-align: right; font-size: 12px; color: #333; line-height: 1.2; }
+        .user-info span { color: #888; font-size: 11px; display: block; }
+
+        /* Action Bar & Tabs */
+        .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
+        .action-bar { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .btn-create { background: #e6192e; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+        .tabs { border-bottom: 1px solid #ddd; display: flex; gap: 20px; margin-bottom: 20px; justify-content: space-between; }
+        .tabs-left { display: flex; gap: 20px; }
+        .tab { padding: 10px 5px; cursor: pointer; color: #666; font-weight: 500; border-bottom: 2px solid transparent; }
+        .tab.active { color: #111; border-bottom-color: #111; }
+
+        /* Filters & Search */
+        .search-row { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 15px; }
+        .search-input { flex-grow: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+        .sort-btn { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #666; font-size: 13px; cursor: pointer; }
+
+        .filters-row { display: flex; gap: 10px; margin-bottom: 25px; }
+        .filter-group { flex: 1; position: relative; }
+        .dropdown-toggle { width: 100%; text-align: left; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;}
+
+        /* Dropdown Menu & Checkboxes */
+        .dropdown-menu {
+            display: none; position: absolute; top: 100%; left: 0; width: 100%;
+            background: #fff; border: 1px solid #ccc; border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; margin-top: 4px;
+            padding: 8px 0; max-height: 250px; overflow-y: auto;
+        }
+        .dropdown-menu.show { display: block; }
+        .checkbox-item { padding: 6px 12px; display: flex; align-items: center; cursor: pointer; }
+        .checkbox-item:hover { background-color: #f0f4f8; }
+        .checkbox-item input { margin-right: 8px; cursor: pointer; }
+
+        /* Custom Red Checkbox Styling */
+        input[type="checkbox"] {
+            accent-color: #e6192e;
+        }
+
+        /* Chart Cards */
+        .card { background: #fff; border: 1px solid #e0e0e0; border-left: 3px solid #e6192e; border-radius: 4px; padding: 15px 20px; margin-bottom: 10px; display: flex; gap: 20px; transition: opacity 0.2s ease-in-out; }
+        .card-main { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-meta-grid { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+        .badge { display: inline-block; background: #f5a623; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 12px; margin-bottom: 8px; text-transform: uppercase; }
+        .card-title { font-size: 14px; font-weight: 500; color: #111; margin-bottom: 15px; line-height: 1.4; }
+
+        .meta-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .meta-col { display: flex; flex-direction: column; gap: 4px; }
+        .meta-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; }
+        .meta-value { font-size: 13px; color: #333; }
+        .text-red { color: #e6192e; }
+        .select-mini { border: 1px solid #ccc; border-radius: 3px; padding: 4px; font-size: 12px; color: #333; background: #fff; width: 100%; }
+
+        .card-footer { display: flex; justify-content: space-between; font-size: 12px; color: #666; margin-top: 15px; }
+        .footer-left span { margin-right: 15px; }
+        .footer-right { color: #555; text-align: right; }
+
+        /* No results message */
+        .no-results { display: none; text-align: center; padding: 40px; color: #666; font-size: 15px; background: #fff; border: 1px dashed #ccc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div style="display: flex; align-items: center;">
+        <div class="logo">
+            <img src="data:image/png;base64,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" alt="EMARKETER Logo">
+        </div>
+        <nav class="top-nav">
+            <a href="#">Assets</a>
+            <a href="#" class="active">Chart CMS</a>
+            <a href="#">Research CMS</a>
+        </nav>
+    </div>
+    <div class="user-info">
+        Dana Hill
+        <span>Admin</span>
+    </div>
+</header>
+
+<div class="container">
+    <div class="action-bar">
+        <button class="btn-create">Create <span style="font-size: 10px;">▼</span></button>
+    </div>
+
+    <div class="tabs">
+        <div class="tabs-left">
+            <div class="tab active">Review queue</div>
+            <div class="tab">Batch queue</div>
+            <div class="tab">Legacy</div>
+        </div>
+        <div class="tab">Individual records</div>
+    </div>
+
+    <div class="search-row">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search by Title, Subtitle, Source Line, or File #">
+        <button class="sort-btn">Sort: Oldest to Newest (Due Date, Priorit...</button>
+    </div>
+
+    <div class="filters-row">
+        <div class="filter-group">
+            <div class="dropdown-toggle" onclick="toggleDropdown('statusMenu')">Status <span style="font-size: 10px;">▲</span></div>
+            <div class="dropdown-menu" id="statusMenu">
+                <label class="checkbox-item" data-order="1"><input type="checkbox" onchange="sortStatus()"> Deleted</label>
+                <label class="checkbox-item" data-order="2"><input type="checkbox" onchange="sortStatus()"> Entry</label>
+                <label class="checkbox-item" data-order="3"><input type="checkbox" onchange="sortStatus()" checked> Proofing</label>
+                <label class="checkbox-item" data-order="4"><input type="checkbox" onchange="sortStatus()"> Publish Failed</label>
+                <label class="checkbox-item" data-order="5"><input type="checkbox" onchange="sortStatus()"> Published</label>
+                <label class="checkbox-item" data-order="6"><input type="checkbox" onchange="sortStatus()"> Published Updated</label>
+                <label class="checkbox-item" data-order="7"><input type="checkbox" onchange="sortStatus()"> Unpublished</label>
+            </div>
+        </div>
+        <div class="filter-group"><div class="dropdown-toggle">Priority <span style="font-size: 10px;">▼</span></div></div>
+        <div class="filter-group"><div class="dropdown-toggle">Reviewer <span style="font-size: 10px;">▼</span></div></div>
+        <div class="filter-group"><div class="dropdown-toggle">Author <span style="font-size: 10px;">▼</span></div></div>
+        <div class="filter-group"><div class="dropdown-toggle">Due Date <span style="font-size: 10px;">▼</span></div></div>
+    </div>
+
+    <div id="cardsContainer">
+        <div class="card">
+            <div class="card-main" style="flex: 1.2;">
+                <div>
+                    <span class="badge">PROOFING</span>
+                    <div class="card-title">NOT CHARTING: Reported Levels of AI Agent Autonomy Among Technology Decision-Makers Worldwide, Aug 2025 (% of respondents)</div>
+                </div>
+                <div class="card-footer footer-left">
+                    <span>File # 354602 <a href="#">View</a></span>
+                    <span>Part of Batch # 216 <a href="#">View</a></span>
+                </div>
+            </div>
+            <div class="card-meta-grid">
+                <div class="meta-row">
+                    <div class="meta-col"><span class="meta-label">AUTHOR</span><span class="meta-value">AI Chart Extractor</span></div>
+                    <div class="meta-col"><span class="meta-label">DUE DATE</span><span class="meta-value text-red">11/14/2025</span></div>
+                    <div class="meta-col"><span class="meta-label">REVIEWER</span><select class="select-mini"><option>Other</option></select></div>
+                    <div class="meta-col"><span class="meta-label">PRIORITY</span><select class="select-mini"><option>None</option></select></div>
+                </div>
+                <div class="card-footer footer-right">
+                    Source Line: G2 Insight Report, "A Leap of Trust: AI Agen...
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-main" style="flex: 1.2;">
+                <div>
+                    <span class="badge">PROOFING</span>
+                    <div class="card-title">NOT CHARTING: Change in Cost per Sales Outcome From Using AI Agents Among B2B Companies Worldwide, Aug 2025 (% of respondents)</div>
+                </div>
+                <div class="card-footer footer-left">
+                    <span>File # 354596 <a href="#">View</a></span>
+                    <span>Part of Batch # 216 <a href="#">View</a></span>
+                </div>
+            </div>
+            <div class="card-meta-grid">
+                <div class="meta-row">
+                    <div class="meta-col"><span class="meta-label">AUTHOR</span><span class="meta-value">AI Chart Extractor</span></div>
+                    <div class="meta-col"><span class="meta-label">DUE DATE</span><span class="meta-value text-red">11/14/2025</span></div>
+                    <div class="meta-col"><span class="meta-label">REVIEWER</span><select class="select-mini"><option>Other</option></select></div>
+                    <div class="meta-col"><span class="meta-label">PRIORITY</span><select class="select-mini"><option>None</option></select></div>
+                </div>
+                <div class="card-footer footer-right">
+                    Source Line: G2 Insight Report, "A Leap of Trust: AI Agen...
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-main" style="flex: 1.2;">
+                <div>
+                    <span class="badge">PROOFING</span>
+                    <div class="card-title">NOT CHARTING: Reported Types of AI Agent Incidents Experienced by Technology Decision-Makers Worldwide, by Incident Type, Aug 2025 (% of respondents)</div>
+                </div>
+                <div class="card-footer footer-left">
+                    <span>File # 354601 <a href="#">View</a></span>
+                    <span>Part of Batch # 216 <a href="#">View</a></span>
+                </div>
+            </div>
+            <div class="card-meta-grid">
+                <div class="meta-row">
+                    <div class="meta-col"><span class="meta-label">AUTHOR</span><span class="meta-value">AI Chart Extractor</span></div>
+                    <div class="meta-col"><span class="meta-label">DUE DATE</span><span class="meta-value text-red">11/14/2025</span></div>
+                    <div class="meta-col"><span class="meta-label">REVIEWER</span><select class="select-mini"><option>Other</option></select></div>
+                    <div class="meta-col"><span class="meta-label">PRIORITY</span><select class="select-mini"><option>None</option></select></div>
+                </div>
+                <div class="card-footer footer-right">
+                    Source Line: G2 Insight Report, "A Leap of Trust: AI Agen...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="noResults" class="no-results">
+        No records match your search query. Try clearing your filters.
+    </div>
+
+</div>
+
+<script>
+    // --- DROPDOWN & SORTING LOGIC ---
+    function toggleDropdown(id) {
+        const menu = document.getElementById(id);
+        menu.classList.toggle('show');
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-toggle')) {
+            const dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].classList.contains('show')) {
+                    dropdowns[i].classList.remove('show');
+                }
+            }
+        }
+    }
+
+    function sortStatus() {
+        const menu = document.getElementById('statusMenu');
+        const items = Array.from(menu.querySelectorAll('.checkbox-item'));
+
+        items.sort((a, b) => {
+            const aChecked = a.querySelector('input').checked;
+            const bChecked = b.querySelector('input').checked;
+
+            if (aChecked !== bChecked) {
+                return aChecked ? -1 : 1;
+            }
+            return parseInt(a.getAttribute('data-order')) - parseInt(b.getAttribute('data-order'));
+        });
+
+        items.forEach(item => menu.appendChild(item));
+    }
+
+    document.addEventListener("DOMContentLoaded", sortStatus);
+
+    // --- REAL-TIME SEARCH FILTERING LOGIC ---
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.card');
+        const noResultsMsg = document.getElementById('noResults');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const cardText = card.innerText.toLowerCase();
+
+            if (cardText.includes(searchTerm)) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (visibleCount === 0) {
+            noResultsMsg.style.display = 'block';
+        } else {
+            noResultsMsg.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>
